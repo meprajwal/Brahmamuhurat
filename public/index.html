@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Brahma Muhurat</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+
+</head>
+<body>
+  <h1>Next Brahma Muhurat Time</h1>
+  <div id="brahma-muhurat-time"></div>
+
+  <script>
+    // Function to get user's current location
+    function getUserLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showBrahmaMuhuratTime);
+      } else {
+        console.log('Geolocation is not supported by this browser.');
+      }
+    }
+
+    // Callback function to display the Brahma Muhurat time
+    function showBrahmaMuhuratTime(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      // Send a request to the server to fetch the next Brahma Muhurat time
+      $.ajax({
+        url: `/brahma-muhurat?lat=${latitude}&lon=${longitude}`,
+        method: 'GET',
+        success: function(response) {
+          const brahmaMuhuratStart = response.brahmaMuhuratTime.start;
+          const brahmaMuhuratEnd = response.brahmaMuhuratTime.end;
+
+          // Display the Brahma Muhurat time on the webpage
+          const brahmaMuhuratTimeDiv = document.getElementById('brahma-muhurat-time');
+          brahmaMuhuratTimeDiv.innerHTML = `<p>Start Time: <span>${brahmaMuhuratStart}</span></p><p>End Time: <span>${brahmaMuhuratEnd}</span></p>`;
+        },
+        error: function(error) {
+          console.log('Error:', error);
+        }
+      });
+    }
+
+    // Call the function to get the user's current location
+    getUserLocation();
+  </script>
+</body>
+</html>
